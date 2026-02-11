@@ -1,0 +1,38 @@
+{
+  "name": "@mbler/mcx-core",
+  "version": "0.0.2-alpha.r4",
+  "description": "a DSL compiler of mcx",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "keywords": [
+    "minecraft"
+  ],
+  "dependencies": {
+
+  },
+  "module": "commjs",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "types": "./dist/index.d.ts",
+  "author": "ruanhor",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^25.2.0",
+    "rollup-plugin-dts": "^6.3.0",
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-json": "^6.1.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "rollup": "^4.57.1",
+    "@minecraft/server": "2.0.0"
+  }
+}
