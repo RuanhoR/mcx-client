@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@mbler/mcx-types':
+        specifier: 0.0.2-alpha
+        version: 0.0.2-alpha(@minecraft/vanilla-data@1.21.131)
       '@minecraft/server':
         specifier: 2.0.0
         version: 2.0.0(@minecraft/vanilla-data@1.21.131)
@@ -39,12 +42,28 @@ packages:
     resolution: {integrity: sha512-9NhCeYjq9+3uxgdtp20LSiJXJvN0FeCtNGpJxuMFZ1Kv3cWUNb6DOhJwUvcVCzKGR66cw4njwM6hrJLqgOwbcw==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/helper-string-parser@7.27.1':
+    resolution: {integrity: sha512-qMlSxKbpRlAridDExk92nSobyDdpPijUq2DW6oDnUqd0iOGxmQjyqhMIihI9+zv4LPyZdRje2cavWPbCbWm3eA==}
+    engines: {node: '>=6.9.0'}
+
   '@babel/helper-validator-identifier@7.28.5':
     resolution: {integrity: sha512-qSs4ifwzKJSV39ucNjsvc6WVHs6b7S03sOh2OcHF9UHfVPqWWALUsNUVzhSBiItjRZoLHx7nIarVjqKVusUZ1Q==}
     engines: {node: '>=6.9.0'}
 
+  '@babel/parser@7.28.5':
+    resolution: {integrity: sha512-KKBU1VGYR7ORr3At5HAtUQ+TV3SzRCXmA/8OdDZiLDBIZxVyzXuztPjfLd3BV1PRAQGCMWWSHYhL0F8d5uHBDQ==}
+    engines: {node: '>=6.0.0'}
+    hasBin: true
+
+  '@babel/types@7.28.6':
+    resolution: {integrity: sha512-0ZrskXVEHSWIqZM/sQZ4EV3jZJXRkio/WCxaqKZP1g//CEWEPSfeZFcms4XeKBCHU0ZKnIkdJeU/kF+eRp5lBg==}
+    engines: {node: '>=6.9.0'}
+
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
+
+  '@mbler/mcx-types@0.0.2-alpha':
+    resolution: {integrity: sha512-uRSrLn8hH0VCKQwo+/pS43OwqOO7HzBBLuigb5D30xd1w3Hp4OA2n3WYDtkL8Htx3Pd/UkMCbzsIbx9B/XVH2g==}
 
   '@minecraft/common@1.2.0':
     resolution: {integrity: sha512-JdmEq4P3Z/FtoBzhLijFgMSVFnFRrUoLwY8DHHrgtFo0mfLTOLTB1RErYjLMsA6b7BGVNxkX/pfFRiH7QZ0XwQ==}
@@ -250,6 +269,9 @@ packages:
   '@types/node@25.2.2':
     resolution: {integrity: sha512-BkmoP5/FhRYek5izySdkOneRyXYN35I860MFAGupTdebyE66uZaR+bXLHq8k4DirE5DwQi3NuhvRU1jqTVwUrQ==}
 
+  '@types/node@25.2.3':
+    resolution: {integrity: sha512-m0jEgYlYz+mDJZ2+F4v8D1AyQb+QzsNqRuI7xg1VQX/KlKS0qT9r1Mo16yo5F/MtifXFgaofIFsdFMox2SxIbQ==}
+
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
 
@@ -351,10 +373,30 @@ snapshots:
       picocolors: 1.1.1
     optional: true
 
-  '@babel/helper-validator-identifier@7.28.5':
-    optional: true
+  '@babel/helper-string-parser@7.27.1': {}
+
+  '@babel/helper-validator-identifier@7.28.5': {}
+
+  '@babel/parser@7.28.5':
+    dependencies:
+      '@babel/types': 7.28.6
+
+  '@babel/types@7.28.6':
+    dependencies:
+      '@babel/helper-string-parser': 7.27.1
+      '@babel/helper-validator-identifier': 7.28.5
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
+
+  '@mbler/mcx-types@0.0.2-alpha(@minecraft/vanilla-data@1.21.131)':
+    dependencies:
+      '@babel/parser': 7.28.5
+      '@babel/types': 7.28.6
+      '@minecraft/server': 2.0.0(@minecraft/vanilla-data@1.21.131)
+      '@types/node': 25.2.3
+      rollup: 4.57.1
+    transitivePeerDependencies:
+      - '@minecraft/vanilla-data'
 
   '@minecraft/common@1.2.0': {}
 
@@ -488,6 +530,10 @@ snapshots:
   '@types/estree@1.0.8': {}
 
   '@types/node@25.2.2':
+    dependencies:
+      undici-types: 7.16.0
+
+  '@types/node@25.2.3':
     dependencies:
       undici-types: 7.16.0
 

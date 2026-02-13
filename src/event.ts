@@ -4,7 +4,7 @@ import {
   WorldAfterEvents,
   WorldBeforeEvents,
 } from "@minecraft/server";
-import { EventOpt } from "./types";
+import { EventOpt } from "@mbler/mcx-types";
 function exports() {
   let world: World = _world;
   const Event = class Event {
