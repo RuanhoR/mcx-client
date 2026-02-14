@@ -3,7 +3,7 @@ import {
 } from "@minecraft/server";
 
 export {
-  default as event
+  default as Event
 } from "./event";
 export {
   default as createApp

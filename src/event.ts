@@ -1,12 +1,12 @@
 import {
-  World,
-  world as _world,
-  WorldAfterEvents,
-  WorldBeforeEvents,
+  type World,
+  world,
+  type WorldAfterEvents,
+  type WorldBeforeEvents,
 } from "@minecraft/server";
 import { EventOpt } from "@mbler/mcx-types";
 function exports() {
-  let world: World = _world;
+  let _world: World = world;
   const Event = class Event {
     #currenyRun: string[] = [];
     #canRun: string[] = [];
@@ -24,9 +24,9 @@ function exports() {
      */
     #bind_event(eventItem: string): boolean {
       if (this.#currenyRun.includes(eventItem)) return true;
-      if (this.#on == "after" && eventItem in world.afterEvents) {
+      if (this.#on == "after" && eventItem in _world.afterEvents) {
         const key = eventItem as keyof WorldAfterEvents;
-        const subscribe = world.afterEvents[key];
+        const subscribe = _world.afterEvents[key];
         const handler = this.#eventList[eventItem];
         if (!handler || typeof handler !== "function")
           throw new Error("[event bind]: mcx bind event: handler is not right");
@@ -34,9 +34,9 @@ function exports() {
         this.#currenyRun.push(eventItem);
         return true;
       }
-      if (this.#on == "before" && eventItem in world.beforeEvents) {
+      if (this.#on == "before" && eventItem in _world.beforeEvents) {
         const key = eventItem as keyof WorldBeforeEvents;
-        const subscribe = world.beforeEvents[key];
+        const subscribe = _world.beforeEvents[key];
         const handler = this.#eventList[eventItem];
         if (!handler || typeof handler !== "function")
           throw new Error("[event bind]: mcx bind event: handler is not right");
@@ -53,13 +53,12 @@ function exports() {
           return !this.#currenyRun.includes(item);
         });
         // all subscribe
-        for (const eventIndex in list) {
-          const eventItem = this.#canRun[eventIndex];
+        for (const eventItem of list) {
           if (!eventItem) continue;
           const s = this.#bind_event(eventItem);
           if (!s)
             throw new Error(
-              "[bind event]: bind event '" + eventItem + "' error",
+              "[bind event]: bind event: '" + eventItem + "' error",
             );
         }
       } else {
@@ -77,24 +76,24 @@ function exports() {
       if (!this.#currenyRun.includes(eventName)) {
         throw new Error("[bind event]: can't close a not running event");
       }
-      if (this.#on == "after" && eventName in world.afterEvents) {
+      if (this.#on == "after" && eventName in _world.afterEvents) {
         const key = eventName as keyof WorldAfterEvents;
-        const subscribe = world.afterEvents[key];
+        const subscribe = _world.afterEvents[key];
         const handler = this.#eventList[eventName];
         if (!handler || typeof handler !== "function")
           throw new Error("[event bind]: mcx bind event: handler is not right");
         subscribe.unsubscribe(handler);
-        this.#currenyRun.push(eventName);
+        this.#currenyRun = this.#currenyRun.filter(item => eventName != item);
         return true;
       }
-      if (this.#on == "before" && eventName in world.beforeEvents) {
+      if (this.#on == "before" && eventName in _world.beforeEvents) {
         const key = eventName as keyof WorldBeforeEvents;
-        const subscribe = world.beforeEvents[key];
+        const subscribe = _world.beforeEvents[key];
         const handler = this.#eventList[eventName];
         if (!handler || typeof handler !== "function")
           throw new Error("[event bind]: mcx bind event: handler is not right");
         subscribe.unsubscribe(handler);
-        this.#currenyRun.push(eventName);
+        this.#currenyRun = this.#currenyRun.filter(item => eventName != item);
         return true;
       }
       return false;
@@ -105,13 +104,12 @@ function exports() {
     public unscribe(...events: string[]) {
       if (!events || events.length == 0) {
         // all run event
-        for (const eventIndex in this.#currenyRun) {
-          const eventItem = this.#canRun[eventIndex];
+        for (const eventItem of this.#currenyRun) {
           if (!eventItem) continue;
           const s = this.#unbind_event(eventItem);
           if (!s)
             throw new Error(
-              "[bind event]: bind event '" + eventItem + "' error",
+              "[bind event]: bind event: '" + eventItem + "' error",
             );
         }
       } else {
@@ -124,8 +122,8 @@ function exports() {
       }
       return true;
     }
-    public useWorld(_world: World) {
-      world = _world;
+    public useWorld(__world: World) {
+      _world = __world // placeholder to satisfy type
     }
   };
   return Event;

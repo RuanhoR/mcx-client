@@ -9,7 +9,7 @@ const main = {
   output: [
     {
       file: "dist/index.js", // CommonJS
-      format: "cjs",
+      format: "esm",
       sourcemap: true,
     },
   ],
