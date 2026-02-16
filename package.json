@@ -1,7 +1,7 @@
 {
   "name": "@mbler/mcx",
-  "version": "0.0.2-beta.r3",
-  "description": "a DSL compiler of mcx",
+  "version": "0.0.2-beta.r5",
+  "description": "MCX Runtime Framework",
   "main": "dist/index.js",
   "scripts": {
     "build": "rollup -c"
@@ -23,7 +23,7 @@
   "author": "ruanhor",
   "license": "MIT",
   "devDependencies": {
-    "@mbler/mcx-types": "0.0.2-alpha",
+    "@mbler/mcx-types": "0.0.2-beta",
     "@minecraft/server": "2.0.0",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",
@@ -31,6 +31,7 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^25.2.0",
     "rollup": "^4.57.1",
-    "rollup-plugin-dts": "^6.3.0"
+    "rollup-plugin-dts": "^6.3.0",
+    "tslib": "^2.8.1"
   }
 }

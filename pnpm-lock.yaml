@@ -9,11 +9,11 @@ importers:
   .:
     devDependencies:
       '@mbler/mcx-types':
-        specifier: 0.0.2-alpha
-        version: 0.0.2-alpha(@minecraft/vanilla-data@1.21.131)
+        specifier: 0.0.2-beta
+        version: 0.0.2-beta(@minecraft/vanilla-data@1.26.0)
       '@minecraft/server':
         specifier: 2.0.0
-        version: 2.0.0(@minecraft/vanilla-data@1.21.131)
+        version: 2.0.0(@minecraft/vanilla-data@1.26.0)
       '@rollup/plugin-commonjs':
         specifier: ^29.0.0
         version: 29.0.0(rollup@4.57.1)
@@ -28,13 +28,16 @@ importers:
         version: 12.3.0(rollup@4.57.1)(tslib@2.8.1)(typescript@5.9.3)
       '@types/node':
         specifier: ^25.2.0
-        version: 25.2.2
+        version: 25.2.3
       rollup:
         specifier: ^4.57.1
         version: 4.57.1
       rollup-plugin-dts:
         specifier: ^6.3.0
         version: 6.3.0(rollup@4.57.1)(typescript@5.9.3)
+      tslib:
+        specifier: ^2.8.1
+        version: 2.8.1
 
 packages:
 
@@ -62,8 +65,8 @@ packages:
   '@jridgewell/sourcemap-codec@1.5.5':
     resolution: {integrity: sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==}
 
-  '@mbler/mcx-types@0.0.2-alpha':
-    resolution: {integrity: sha512-uRSrLn8hH0VCKQwo+/pS43OwqOO7HzBBLuigb5D30xd1w3Hp4OA2n3WYDtkL8Htx3Pd/UkMCbzsIbx9B/XVH2g==}
+  '@mbler/mcx-types@0.0.2-beta':
+    resolution: {integrity: sha512-MOGWlRSfsAVBM8dRD2pzL8bNSvDxpBqDP7BrgEVqQ0KnToabt4Rjh8ixL3bjWp6wmeEvElHovM/1tyxCLXFL9g==}
 
   '@minecraft/common@1.2.0':
     resolution: {integrity: sha512-JdmEq4P3Z/FtoBzhLijFgMSVFnFRrUoLwY8DHHrgtFo0mfLTOLTB1RErYjLMsA6b7BGVNxkX/pfFRiH7QZ0XwQ==}
@@ -73,8 +76,8 @@ packages:
     peerDependencies:
       '@minecraft/vanilla-data': '>=1.20.70'
 
-  '@minecraft/vanilla-data@1.21.131':
-    resolution: {integrity: sha512-Ptw6t5mgyOODFmZxpZRRawjfhgcniGNf7kZqxV98RTAJi61tZ6wEMcI9muiWXw5yrNstYcTxJmqVjx1RaZKkxg==}
+  '@minecraft/vanilla-data@1.26.0':
+    resolution: {integrity: sha512-jFIXJXGW0SzVazD3h+PW378YJF937mCZRR+7REJben6M44+yuLPWSf32VVTlmTHJeVsX6XbVnxWY9xWud6iUig==}
 
   '@rollup/plugin-commonjs@29.0.0':
     resolution: {integrity: sha512-U2YHaxR2cU/yAiwKJtJRhnyLk7cifnQw0zUpISsocBDoHDJn+HTV74ABqnwr5bEgWUwFZC9oFL6wLe21lHu5eQ==}
@@ -266,9 +269,6 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  '@types/node@25.2.2':
-    resolution: {integrity: sha512-BkmoP5/FhRYek5izySdkOneRyXYN35I860MFAGupTdebyE66uZaR+bXLHq8k4DirE5DwQi3NuhvRU1jqTVwUrQ==}
-
   '@types/node@25.2.3':
     resolution: {integrity: sha512-m0jEgYlYz+mDJZ2+F4v8D1AyQb+QzsNqRuI7xg1VQX/KlKS0qT9r1Mo16yo5F/MtifXFgaofIFsdFMox2SxIbQ==}
 
@@ -388,11 +388,11 @@ snapshots:
 
   '@jridgewell/sourcemap-codec@1.5.5': {}
 
-  '@mbler/mcx-types@0.0.2-alpha(@minecraft/vanilla-data@1.21.131)':
+  '@mbler/mcx-types@0.0.2-beta(@minecraft/vanilla-data@1.26.0)':
     dependencies:
       '@babel/parser': 7.28.5
       '@babel/types': 7.28.6
-      '@minecraft/server': 2.0.0(@minecraft/vanilla-data@1.21.131)
+      '@minecraft/server': 2.0.0(@minecraft/vanilla-data@1.26.0)
       '@types/node': 25.2.3
       rollup: 4.57.1
     transitivePeerDependencies:
@@ -400,12 +400,12 @@ snapshots:
 
   '@minecraft/common@1.2.0': {}
 
-  '@minecraft/server@2.0.0(@minecraft/vanilla-data@1.21.131)':
+  '@minecraft/server@2.0.0(@minecraft/vanilla-data@1.26.0)':
     dependencies:
       '@minecraft/common': 1.2.0
-      '@minecraft/vanilla-data': 1.21.131
+      '@minecraft/vanilla-data': 1.26.0
 
-  '@minecraft/vanilla-data@1.21.131': {}
+  '@minecraft/vanilla-data@1.26.0': {}
 
   '@rollup/plugin-commonjs@29.0.0(rollup@4.57.1)':
     dependencies:
@@ -529,10 +529,6 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  '@types/node@25.2.2':
-    dependencies:
-      undici-types: 7.16.0
-
   '@types/node@25.2.3':
     dependencies:
       undici-types: 7.16.0
@@ -629,8 +625,7 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  tslib@2.8.1:
-    optional: true
+  tslib@2.8.1: {}
 
   typescript@5.9.3: {}
 
