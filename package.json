@@ -23,7 +23,7 @@
   "author": "ruanhor",
   "license": "MIT",
   "devDependencies": {
-    "@mbler/mcx-types": "0.0.2-beta",
+    "@mbler/mcx-types": "0.0.2-beta.r2026031201",
     "@minecraft/server": "2.0.0",
     "@rollup/plugin-commonjs": "^29.0.0",
     "@rollup/plugin-json": "^6.1.0",

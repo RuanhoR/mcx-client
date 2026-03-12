@@ -1,10 +1,10 @@
-import {
-  world
-} from "@minecraft/server";
-
+import * as Utils from "./lib/Utils"
 export {
-  default as Event
+  Event
 } from "./event";
 export {
-  default as createApp
+  createApp
 } from "./createApp"
+export {
+  Utils
+}

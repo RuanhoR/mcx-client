@@ -5,181 +5,138 @@ import {
   type WorldBeforeEvents,
 } from "@minecraft/server";
 import { EventOpt, MCXFile } from "@mbler/mcx-types";
-function exports() {
-  let _world: World = world;
-  const Event = class Event {
-    #currenyRun: string[] = [];
-    #canRun: string[] = [];
-    #eventList: EventOpt["data"] = {};
-    #on: "after" | "before";
-    #extendsList: Event[] = [];
-    #tick: number | null = null;
-    #lastRun: number = Date.now()
-    constructor(data: EventOpt) {
-      this.#canRun = Object.keys(data.data);
-      this.#eventList = Object.fromEntries(Object.entries(data.data).map(item => {
-        return [item[0], this.#summonEventStructe(item[1])]
-      }));
-      this.#on = data.on;
-      if (Array.isArray(data.extends) && data.extends?.length >= 1) {
-        this.#extendsList = data.extends.map<Event>(
-          (item: MCXFile<"event">): Event => {
-            if (item.type !== "event") {
-              throw new TypeError(
-                "[extend event]: Event extends must Event class",
-              );
-            }
-            if (item.event instanceof Event) return item.event as Event;
-            throw new TypeError("[extend event]: not MCXFile<event>");
-          },
-        );
-      }
-      if (data.tick) {
-        this.#tick = data.tick
-      }
-    }
-    #summonEventStructe(fn: (event: any) => void): (event: any) => void {
-      return (event) => {
-        const time = Date.now()
-        if (this.#tick && this.#tick >= 1) {
-          if (time - this.#lastRun <= this.#tick) {
-            return;
-          } else {
-            this.#lastRun = time;
-          }
-        };
-        fn(event);
-      }
-    }
-    #execInExtend<K extends keyof MCXFile<"event">["event"]>(
-      key: K,
-      arg: Parameters<MCXFile<"event">["event"][K]> | any,
-    ) {
-      for (const extItem of this.#extendsList) {
-        const run = extItem[key];
-        if (typeof run === "function") {
-          if (Array.isArray(arg)) {
-            (run as (...args: any[]) => any)(...(arg as any[])); // Cast to function with rest args and arg as any[]
-          } else {
-            run(arg);
-          }
-        }
-      }
-    }
-    /**
-     *
-     * @param eventName {string} - eventName
-     * @returns {boolean} - if succeess
-     */
-    #bind_event(eventItem: string): boolean {
-      if (this.#currenyRun.includes(eventItem)) return true;
-      if (this.#on == "after" && eventItem in _world.afterEvents) {
-        const key = eventItem as keyof WorldAfterEvents;
-        const subscribe = _world.afterEvents[key];
-        const handler = this.#eventList[eventItem];
-        if (!handler || typeof handler !== "function")
-          throw new Error("[event bind]: mcx bind event: handler is not right");
-        subscribe.subscribe(handler);
-        this.#currenyRun.push(eventItem);
-        return true;
-      }
-      if (this.#on == "before" && eventItem in _world.beforeEvents) {
-        const key = eventItem as keyof WorldBeforeEvents;
-        const subscribe = _world.beforeEvents[key];
-        const handler = this.#eventList[eventItem];
-        if (!handler || typeof handler !== "function")
-          throw new Error("[event bind]: mcx bind event: handler is not right");
-        subscribe.subscribe(handler);
-        this.#currenyRun.push(eventItem);
-        return true;
-      }
-      return false;
-    }
-    public subscribe(...events: string[]): boolean {
-      this.#execInExtend("subscribe", events)
-      if (!events || events.length == 0) {
-        // 求差集
-        const list = this.#canRun.filter((item: string) => {
-          return !this.#currenyRun.includes(item);
-        });
-        // all subscribe
-        for (const eventItem of list) {
-          if (!eventItem) continue;
-          const s = this.#bind_event(eventItem);
-          if (!s)
-            throw new Error(
-              "[bind event]: bind event: '" + eventItem + "' error",
-            );
-        }
-      } else {
-        for (const eventName of events) {
-          if (typeof eventName !== "string")
-            throw new Error("[bind event]: bind eventname is not ");
-          const status = this.#bind_event(eventName);
-          if (!status)
-            throw new Error("[bind event]: event: '" + eventName + "' error");
-        }
-      }
-      return true;
-    }
-    #unbind_event(eventName: string): boolean {
-      if (!this.#currenyRun.includes(eventName)) {
-        throw new Error("[bind event]: can't close a not running event");
-      }
-      if (this.#on == "after" && eventName in _world.afterEvents) {
-        const key = eventName as keyof WorldAfterEvents;
-        const subscribe = _world.afterEvents[key];
-        const handler = this.#eventList[eventName];
-        if (!handler || typeof handler !== "function")
-          throw new Error("[event bind]: mcx bind event: handler is not right");
-        subscribe.unsubscribe(handler);
-        this.#currenyRun = this.#currenyRun.filter((item) => eventName != item);
-        return true;
-      }
-      if (this.#on == "before" && eventName in _world.beforeEvents) {
-        const key = eventName as keyof WorldBeforeEvents;
-        const subscribe = _world.beforeEvents[key];
-        const handler = this.#eventList[eventName];
-        if (!handler || typeof handler !== "function")
-          throw new Error("[event bind]: mcx bind event: handler is not right");
-        subscribe.unsubscribe(handler);
-        this.#currenyRun = this.#currenyRun.filter((item) => eventName != item);
-        return true;
-      }
-      return false;
-    }
-    /**
-     * unscribe
-     */
-    public unscribe(...events: string[]) {
-      this.#execInExtend("unscribe", events)
-      if (!events || events.length == 0) {
-        // all run event
-        for (const eventItem of this.#currenyRun) {
-          if (!eventItem) continue;
-          const s = this.#unbind_event(eventItem);
-          if (!s)
-            throw new Error(
-              "[bind event]: bind event: '" + eventItem + "' error",
-            );
-        }
-      } else {
-        for (const eventName of events) {
-          if (typeof eventName !== "string") throw new Error("");
-          const status = this.#unbind_event(eventName);
-          if (!status)
-            throw new Error("[bind event]: event: '" + eventName + "' error");
-        }
-      }
-      return true;
-    }
-    public useWorld(__world: World) {
-      this.#execInExtend("useWorld", __world)
-      _world = __world; // placeholder to satisfy type
-    }
-  };
-  return Event;
+import { generateAntiShake } from "./lib/Utils";
+let _world = world;
+interface BindResponse {
+  code: number;
+  msg: string;
+}
+class EventStatus {
+  run: string[] = [];
+  all: Record<string, (event: any) => void> = {};
+  runCout: number = 0;
+  extendList: Event[] = [];
+  on: WorldAfterEvents | WorldBeforeEvents | null = null;
 }
 
-const im = exports();
-export default im;
+class Event {
+  status = new EventStatus();
+  constructor(opt: EventOpt, loadExtend: (mcx: MCXFile<"event">) => Event) {
+    this.status.all = Object.fromEntries(Object.entries(opt.data).map(vl => {
+      if (opt.tick) {
+        return [vl[0], generateAntiShake(vl[1], opt.tick)]
+      }
+      return vl
+    }));
+    if (opt.extends) this.status.extendList = opt.extends.map(loadExtend);
+    this.status.on = opt.on == "after" ? _world.afterEvents : _world.beforeEvents;
+  }
+  private _execInExtends(method: keyof Event, ...args: any[]) {
+    for (const i of this.status.extendList) {
+      const fn = i[method];
+      if (typeof fn !== "function") return;
+      (fn as Function).apply(i, args);
+    }
+  }
+  private _bindEvent(eventName: string, handler: (event: any) => void): BindResponse {
+    if (!this.status.on) return {
+      code: -1,
+      msg: "Init Event error"
+    }
+    const isSubscribe = this.status.run.some(vl => vl == eventName);
+    if (isSubscribe) return {
+      code: -1,
+      msg: "Can't subscribe again"
+    };
+
+    if (eventName in this.status.on) {
+      this.status.on[eventName as keyof (WorldAfterEvents | WorldBeforeEvents)].subscribe(handler);
+      this.status.run.push(eventName)
+      this.status.runCout++;
+      return {
+        code: 200,
+        msg: "success"
+      }
+    } else {
+      return {
+        code: -1,
+        msg: "Not Found this event"
+      }
+    }
+  }
+  private _remove_bind_event(eventName: string, handler: (event: any) => void): BindResponse {
+    if (!this.status.on) return {
+      code: -1,
+      msg: "Init Event error"
+    };
+    const isSubscribe = this.status.run.some(vl => vl == eventName);
+    // if not run
+    if (!isSubscribe) {
+      return {
+        code: -1,
+        msg: "Can't stop a not bind event"
+      }
+    };
+    if (eventName in this.status.on) {
+      const name: (keyof typeof this.status.on) = eventName as keyof typeof this.status.on;
+      this.status.on[name].unsubscribe(handler);
+      const index = this.status.run.indexOf(eventName);
+      if (index > -1) {
+        this.status.run.splice(index, 1);
+      }
+      this.status.runCout--;
+      return {
+        code: 200,
+        msg: "Success"
+      }
+    };
+    return {
+      code: -1,
+      msg: "Not Found Event"
+    }
+  }
+  public unsubscribe(...arg: string[]): boolean {
+    this._execInExtends("unsubscribe", ...arg);
+    let success = true;
+    if (arg.length == 0) arg = Object.keys(this.status.all);
+    for (const item of arg) {
+      const handler = this.status.all[item];
+      if (!handler || typeof handler !== "function") {
+        success = false;
+        console.warn("[mcx runtime]: can't find event handler for event: '" + item + "'");
+        continue;
+      }
+      const response = this._remove_bind_event(item, handler);
+      if (response.code !== 200) {
+        success = false;
+        console.warn(`[mcx runtime]: bind event '${item}' error: ${response.msg} `)
+      }
+    }
+    return success;
+  }
+  public useWorld(w: World) {
+    this._execInExtends("useWorld", w)
+    _world = w;
+  }
+  public subscribe(...arg: string[]): boolean {
+    this._execInExtends("subscribe", ...arg);
+    if (arg.length == 0) arg = Object.keys(this.status.all);
+    let success = true;
+    for (const item of arg) {
+      const handler = this.status.all[item];
+      if (!handler || typeof handler !== "function") {
+        console.warn("[mcx runtime]: can't find event handler for event: '" + item + "'");
+        success = false;
+        continue;
+      }
+      const response = this._bindEvent(item, handler);
+      if (response.code !== 200) {
+        success = false;
+        console.warn(`[mcx runtime]: bind event '${item}' error: ${response.msg} `)
+      }
+    }
+    return success;
+  }
+}
+
+export { Event };
